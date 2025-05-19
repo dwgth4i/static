@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome to Cycorp</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+
+    .bg-blur {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(30px) brightness(0.6);
+      z-index: -10;
+      transition: background-image 1s ease-in-out;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeIn 0.5s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-white relative overflow-hidden">
+
+  <!-- Fullscreen Blurred Background -->
+  <div id="bg-blur" class="bg-blur"></div>
+
+  <div class="min-h-screen flex items-center justify-center px-4">
+    <div class="relative w-full max-w-5xl z-10">
+
+      <!-- Cycorp -->
+      <div class="relative flex items-center justify-center space-x-6 transition-all duration-700 ease-in-out">
+
+        <!-- Left member -->
+        <div id="left-member" class="opacity-50 transform scale-75 cursor-pointer transition-all duration-500"></div>
+
+        <!-- Center member -->
+        <div id="center-member" class="transition-all duration-500"></div>
+
+        <!-- Right member -->
+        <div id="right-member" class="opacity-50 transform scale-75 cursor-pointer transition-all duration-500"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const members = [
+  {
+    name: "21 Savage",
+    role: "CEO & Visionary",
+    img: "/static/img/21.savage.jpg"
+  },
+  {
+    name: "Travis Scott",
+    role: "Lead Developer",
+    img: "/static/img/t.scott.png"
+  },
+  {
+    name: "The Weeknd",
+    role: "UX Designer",
+    img: "/static/img/t.weeknd.png"
+  },
+  {
+    name: "Central Cee",
+    role: "Security Expert",
+    img: "/static/img/c.cee.jpg"
+  },
+  {
+    name: "Metro Boomin",
+    role: "Penetration Tester",
+    img: "/static/img/m.boomin.png"
+  },
+  {
+    name: "Nguyen Thi Viet Nga",
+    role: "Head of Human Resource",
+    img: "/static/img/cycorp_hr.jpg"
+  }
+];
+
+    let currentIndex = 0;
+
+    const leftDiv = document.getElementById("left-member");
+    const centerDiv = document.getElementById("center-member");
+    const rightDiv = document.getElementById("right-member");
+    const bgBlur = document.getElementById("bg-blur");
+
+    function renderCycorp() {
+      const leftIndex = (currentIndex - 1 + members.length) % members.length;
+      const rightIndex = (currentIndex + 1) % members.length;
+
+      leftDiv.innerHTML = getMemberHTML(leftIndex, true);
+      centerDiv.innerHTML = getMemberHTML(currentIndex, false);
+      rightDiv.innerHTML = getMemberHTML(rightIndex, true);
+
+      // Fade in effect
+      centerDiv.classList.remove("fade-in");
+      void centerDiv.offsetWidth; // trigger reflow
+      centerDiv.classList.add("fade-in");
+
+      // Update background
+      bgBlur.style.backgroundImage = `url('${members[currentIndex].img}')`;
+    }
+
+    function getMemberHTML(index, isSmall) {
+      const member = members[index];
+      const size = isSmall ? 'w-28 h-28' : 'w-44 h-44';
+      const roleClass = isSmall ? 'text-xs' : 'text-sm';
+      return `
+        <div class="flex flex-col items-center text-center transition duration-500">
+          <img src="${member.img}" alt="${member.name}" class="rounded-full object-cover ${size} mb-2 shadow-md ring-4 ring-white">
+          <h2 class="text-white font-semibold">${member.name}</h2>
+          <p class="text-indigo-200 ${roleClass}">${member.role}</p>
+        </div>
+      `;
+    }
+
+    function next() {
+      currentIndex = (currentIndex + 1) % members.length;
+      renderCycorp();
+    }
+
+    function prev() {
+      currentIndex = (currentIndex - 1 + members.length) % members.length;
+      renderCycorp();
+    }
+
+    leftDiv.addEventListener("click", prev);
+    rightDiv.addEventListener("click", next);
+
+    renderCycorp();
+    setInterval(next, 6000); // auto-rotate every 6s
+  </script>
+</body>
+</html>
